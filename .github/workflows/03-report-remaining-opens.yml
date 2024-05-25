@@ -1,0 +1,32 @@
+name: Report remaining open issues
+on: 
+  schedule: 
+    # Daily at 8:20 UTC
+    # - cron: '20 8 * * *'
+    workflow_dispatch
+jobs:
+  track_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          timeStamp="$(date +%y-%m-%d-%H:%M:%S)
+          numOpenIssues="$(gh api graphql -F owner=$OWNER -F name=$REPO -f query='
+            query($name: String!, $owner: String!) {
+              repository(owner: $owner, name: $name) {
+                issues(states:OPEN){
+                  totalCount
+                }
+              }
+            }
+          ' --jq '.data.repository.issues.totalCount')"
+
+          echo 'REPORT_TIME='$timeStamp >> $GITHUB_ENV
+          echo 'NUM_OPEN_ISSUES='$numOpenIssues >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+      - run: |
+          gh issue create --title "Issue report at $REPORT_TIME" --body "$NUM_OPEN_ISSUES issues remaining at $REPORT_TIME" --repo $GITHUB_REPOSITORY
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
