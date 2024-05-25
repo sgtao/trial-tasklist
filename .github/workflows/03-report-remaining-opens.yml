@@ -5,8 +5,11 @@ on:
   #   # Daily at 8:20 UTC
   #   - cron: '20 8 * * *'
 jobs:
-  track_pr:
+  track_issue:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     steps:
       - run: |
           timeStamp="$(date +%y-%m-%d-%H:%M:%S)"
