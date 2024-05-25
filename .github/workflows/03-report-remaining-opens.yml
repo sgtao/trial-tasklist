@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          timeStamp="$(date +%y-%m-%d-%H:%M:%S)
+          timeStamp="$(date +%y-%m-%d-%H:%M:%S)"
           numOpenIssues="$(gh api graphql -F owner=$OWNER -F name=$REPO -f query='
             query($name: String!, $owner: String!) {
               repository(owner: $owner, name: $name) {
