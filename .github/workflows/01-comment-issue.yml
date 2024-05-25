@@ -6,9 +6,11 @@ on:
 jobs:
   comment:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     steps:
       - run: gh issue comment $ISSUE --body "Thank you for opening this issue!"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # GH_TOKEN: ${{ secrets.TASKLIST_TOKEN }}
           ISSUE: ${{ github.event.issue.html_url }}
